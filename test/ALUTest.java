@@ -1,52 +1,101 @@
-package test;
-
 import model.ALU;
+import model.Register;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import view.GUI;
+
+import javax.swing.*;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * JUnit4 tests for the ALU class.
- * All tests should pass.
+ * JUnit4 tests for the ALU class. All tests should pass.
+ * 
  * @author Group 6: Anna Blanton
  * @version 10/18/2020
  */
 public class ALUTest {
-    ALU alu;
+	ALU alu;
+	Register r;
+	GUI view;
 
-    @Before
-    public void setUp() {
-        alu = new ALU();
-    }
+	@Before
+	public void setUp() {
+		view = new GUI();
+		alu = new ALU();
+		r = new Register();
+	}
 
-    @Test
-    public void testAdd() {
-        assertEquals(20, alu.add((short) 13, (short) 7));
-    }
+	@Test
+	public void testAdd() {
+		r.load((short) 13);
+		assertEquals(20, alu.add(r, (short) 7));
+	}
 
-    @Test
-    public void testSubtract() {
-        assertEquals(5, alu.subtract((short)15, (short)10));
-    }
+	@Test
+	public void testSubtract() {
+		r.load((short) 15);
+		assertEquals(5, alu.subtract(r, (short) 10));
+	}
 
-    @Test
-    public void testAddOverflow() {
-        assertEquals(-32765, alu.add((short) 32767, (short) 4));
-    }
+	@Test
+	public void testAddOverflow() {
+		r.load((short) 32767);
+		assertEquals(-32765, alu.add(r, (short) 4));
+	}
 
-    @Test
-    public void testSubtractUnderflow() {
-        assertEquals(32765, alu.subtract((short) -32768, (short) 3));
-    }
+	@Test
+	public void testSubtractUnderflow() {
+		r.load((short) -32768);
+		assertEquals(32765, alu.subtract(r, (short) 3));
+	}
 
-    @Test
-    public void testSubtractToNeg() {
-        assertEquals(-3, alu.subtract((short) 3, (short) 6));
-    }
+	@Test
+	public void testSubtractToNeg() {
+		r.load((short) 3);
+		assertEquals(-3, alu.subtract(r, (short) 6));
+	}
 
-    @Test
-    public void testAddToPos() {
-        assertEquals( 3, alu.add((short) -3, (short) 6));
-    }
+	@Test
+	public void testAddToPos() {
+		r.load((short) -3);
+		assertEquals(3, alu.add(r, (short) 6));
+	}
+
+	@Test
+	public void testAnd() {
+		r.load((short) 10);
+		assertEquals(2, alu.and(r, (short) 2));
+	}
+
+	@Test
+	public void testOr() {
+		r.load((short) 12);
+		assertEquals(13, alu.or(r, (short) 13));
+	}
+
+	@Test
+	public void testROR() {
+		r.load((short) 17);
+		assertEquals(8, alu.rotateRight(r));
+	}
+
+	@Test
+	public void testROL() {
+		r.load((short) 30);
+		assertEquals(60, alu.rotateLeft(r));
+	}
+
+	@Test
+	public void testArithShiftLeft() {
+		r.load((short) 25);
+		assertEquals(12, alu.arithShiftLeft(r));
+	}
+
+	@Test
+	public void testArithShiftRight() {
+		r.load((short) 10);
+		assertEquals(20, alu.arithShiftRight(r));
+	}
 }

@@ -67,7 +67,7 @@ public class ALU {
 	 * @param reg The register where our second short value is stored.
 	 * @return The sum of our two short values.
 	 */
-	public short add(short x, Register reg) {
+	public short add(Register reg, short x) {
 		return add(reg.getReg(), x);
 	}
 	

@@ -128,6 +128,14 @@ public class CPU {
 				//Char output from operand
 				//direct addressing mode
 				rtnVal = 10;
+			} else if (byte1 == (byte) 0x90) { //bitwise AND (immediate)
+				rtnVal = 11;
+			} else if (byte1 == (byte) 0x91) { //bitwise AND (direct)
+				rtnVal = 12;
+			} else if (byte1 == (byte) 0xA0) { //bitwise OR (immediate)
+				rtnVal = 13;
+			} else if (byte1 == (byte) 0xA1) { //bitwise OR (direct)
+				rtnVal = 14;
 			}
 		}
 		
@@ -240,6 +248,21 @@ public class CPU {
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					char out = (char) m.getDataAt(fuse);
 					pep8View.output(out);
+				} else if (instrType == 11) {
+					//Bitwise AND (immediate)
+					short fuse = this.fuseBytes(operSpec1, operSpec2);
+					regA.load(myALU.and(regA.getReg(), fuse));
+				} else if (instrType == 12) {
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					regA.load(myALU.and(regA.getReg(), fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+				} else if (instrType == 13) {
+					//bitwise OR (immediate)
+					short fuse = this.fuseBytes(operSpec1, operSpec2);
+					regA.load(myALU.or(regA.getReg(), fuse));
+				} else if (instrType == 14) {
+					//bitwise OR (direct)
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					regA.load(myALU.and(regA.getReg(), fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
