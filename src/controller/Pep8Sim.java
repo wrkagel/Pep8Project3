@@ -8,17 +8,21 @@ import javax.swing.*;
 /**
  * This class is designed to instantiate both the Machine and GUI and facilitate communication between them.
  * @author Group 6: Walter Kagel
- * @version 10/17/2020
+ * @version 12/08/2020
  */
 public class Pep8Sim {
 
+    private final GUI pep8View;
+    private final Machine pep8Machine;
+
     /**
-     * Main method of the program.
-     * @param args Unused.
+     * Adds the property change listeners and instantiates the controller.
+     * @param pep8View Used for access to the GUI
+     * @param pep8Machine Used for access to the Machine
      */
-    public static void main(String[] args) {
-        GUI pep8View = new GUI();
-        Machine pep8Machine = new Machine(pep8View);
+    public Pep8Sim(GUI pep8View, Machine pep8Machine) {
+        this.pep8View = pep8View;
+        this.pep8Machine = pep8Machine;
         //Use a listener to tell when someone presses start, read in code, store it to memory, and run code.
         pep8View.addPropertyChangeListener("Start", e -> {
             String code = (String) e.getNewValue();
