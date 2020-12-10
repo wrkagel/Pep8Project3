@@ -90,12 +90,12 @@ public class ALUTest {
 	@Test
 	public void testArithShiftLeft() {
 		r.load((short) 25);
-		assertEquals(12, alu.arithShiftLeft(r));
+		assertEquals(50, alu.arithShiftLeft(r));
 	}
 
 	@Test
 	public void testArithShiftRight() {
 		r.load((short) 10);
-		assertEquals(20, alu.arithShiftRight(r));
+		assertEquals(5, alu.arithShiftRight(r));
 	}
 }

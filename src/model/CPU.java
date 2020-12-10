@@ -251,18 +251,18 @@ public class CPU {
 				} else if (instrType == 11) {
 					//Bitwise AND (immediate)
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
-					regA.load(myALU.and(regA.getReg(), fuse));
+					regA.load(myALU.and(regA, fuse));
 				} else if (instrType == 12) {
 					short address = this.calculateDirectAddress(operSpec1, operSpec2);
-					regA.load(myALU.and(regA.getReg(), fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+					regA.load(myALU.and(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				} else if (instrType == 13) {
 					//bitwise OR (immediate)
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
-					regA.load(myALU.or(regA.getReg(), fuse));
+					regA.load(myALU.or(regA, fuse));
 				} else if (instrType == 14) {
 					//bitwise OR (direct)
 					short address = this.calculateDirectAddress(operSpec1, operSpec2);
-					regA.load(myALU.and(regA.getReg(), fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
