@@ -136,6 +136,14 @@ public class CPU {
 				rtnVal = 13;
 			} else if (byte1 == (byte) 0xA1) { //bitwise OR (direct)
 				rtnVal = 14;
+			} else if (byte1 == (byte) 0x22) { //ROR
+				rtnVal = 15;
+			} else if (byte1 == (byte) 0x20) { //ROL
+				rtnVal = 16;
+			} else if (byte1 == (byte) 0x1E) { //ASR
+				rtnVal = 17;
+			} else if (byte1 == (byte) 0x1C) { //ASL
+				rtnVal = 18;
 			}
 		}
 		
@@ -263,6 +271,14 @@ public class CPU {
 					//bitwise OR (direct)
 					short address = this.calculateDirectAddress(operSpec1, operSpec2);
 					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+				} else if (instrType == 15) { //ROR
+					regA.load(myALU.rotateRight(regA));
+				} else if (instrType == 16) { //ROL
+					regA.load(myALU.rotateLeft(regA));
+				} else if (instrType == 17) { //ASR
+					regA.load(myALU.arithShiftRight(regA));
+				} else if (instrType == 18) { //ASL
+					regA.load(myALU.arithShiftLeft(regA));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
