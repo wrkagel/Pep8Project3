@@ -23,7 +23,7 @@ public class ALUTest {
 	@Before
 	public void setUp() {
 		view = new GUI();
-		alu = new ALU();
+		alu = new ALU(view);
 		r = new Register();
 	}
 
