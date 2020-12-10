@@ -6,12 +6,18 @@ package model;
  * @version 10/16/2020
  */
 public class ALU {
-	
+	private Flag nFlag;
+	private Flag zFlag;
+	private Flag vFlag;
+	private Flag cFlag;
 	/**
 	 * Initializes our ALU.
 	 */
 	public ALU() {
-	
+		nFlag = Flag.N;
+		zFlag = Flag.Z;
+		vFlag = Flag.V;
+		cFlag = Flag.C;
 	}
 	
 	/**
