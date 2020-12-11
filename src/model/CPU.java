@@ -47,7 +47,7 @@ public class CPU {
 		instrReg = new InstructionRegister();
 		progCounter = new ProgramCounter();
 		regA = new Register();
-		myALU = new ALU();
+		myALU = new ALU(view);
 		pep8View = view;
 	}
 
@@ -87,7 +87,7 @@ public class CPU {
 			//stop execution
 			isFirst = true;
 			rtnVal = 0;
-		} else if (byte1 < 0) {
+		} else {
 			if (byte1 == (byte) -64) {
 				//load operand into register A
 				//immediate addressing mode
@@ -107,9 +107,7 @@ public class CPU {
 				//Subtract the operand to the A register
 				//direct addressing mode
 				rtnVal = 7;
-			}
-		} else {
-			if (byte1 == (byte) 112) {
+			} else if (byte1 == (byte) 112) {
 				//Add the operand to the A register
 				//immediate addressing mode
 				rtnVal = 4;
@@ -128,12 +126,28 @@ public class CPU {
 				//Char output from operand
 				//direct addressing mode
 				rtnVal = 10;
+			} else if (byte1 == (byte) 0x90) { //bitwise AND (immediate)
+				rtnVal = 11;
+			} else if (byte1 == (byte) 0x91) { //bitwise AND (direct)
+				rtnVal = 12;
+			} else if (byte1 == (byte) 0xA0) { //bitwise OR (immediate)
+				rtnVal = 13;
+			} else if (byte1 == (byte) 0xA1) { //bitwise OR (direct)
+				rtnVal = 14;
+			} else if (byte1 == (byte) 0x22) { //ROR
+				rtnVal = 15;
+			} else if (byte1 == (byte) 0x20) { //ROL
+				rtnVal = 16;
+			} else if (byte1 == (byte) 0x1E) { //ASR
+				rtnVal = 17;
+			} else if (byte1 == (byte) 0x1C) { //ASL
+				rtnVal = 18;
 			} else if (byte1 == (byte) 64) {
 				//Bitwise invert value in accumulator
-				rtnVal = 16;
+				rtnVal = 19;
 			} else if (byte1 == (byte) 66) {
 				//Negate value in accumulator
-				rtnVal = 17;
+				rtnVal = 20;
 			}
 		}
 		
@@ -158,18 +172,24 @@ public class CPU {
 			end = true;
 		} else {
 			try {
-				byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
-				byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
-				progCounter.offset((byte) 2);
+//				byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+//				byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+//				progCounter.offset((byte) 2);
 				if (instrType == 1) {
 					//load operand into register A
 					//immediate addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = fuseBytes(operSpec1, operSpec2);
 					regA.load(fuse);
 					
 				} else if (instrType == 2) {
 					//load operand into register A
 					//direct addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					byte retrieved = m.getDataAt(fuse);
 					byte retrievedN = m.getDataAt((short) (fuse + 1));
@@ -178,6 +198,9 @@ public class CPU {
 						
 				} else if (instrType == 3) {
 					//store the A register to the location in operand
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short whole = regA.getReg();
 					boolean[] wholeBool = this.toBoolArray(whole);
 					boolean[] half1 = new boolean[8];
@@ -197,12 +220,18 @@ public class CPU {
 				} else if (instrType == 4) {
 					//Add the operand to the A register
 					//immediate addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
 					regA.load(myALU.add(fuse, regA.getReg()));
 						
 				} else if (instrType == 5) {
 					//Add the operand to the A register
 					//direct addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short address = this.calculateDirectAddress(operSpec1, operSpec2);
 			        short addressR = (short) (address + 1);
 			        byte addressVal = m.getDataAt(address);
@@ -213,12 +242,18 @@ public class CPU {
 				} else if (instrType == 6) {
 					//Subtract the operand to the A register
 					//immediate addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
 					regA.load(myALU.subtract(regA.getReg(), fuse));
 					
 				} else if (instrType == 7) {
 					//Subtract the operand to the A register
 					//direct addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short address = this.calculateDirectAddress(operSpec1, operSpec2);
 			        short addressR = (short) (address + 1);
 			        byte addressVal = m.getDataAt(address);
@@ -228,6 +263,9 @@ public class CPU {
 					
 				} else if (instrType == 8) {
 					//Char input to location of operand
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					byte scannedInput = (byte) pep8View.getBatchInput();
 					short fuse = fuseBytes(operSpec1, operSpec2);
 					m.store(fuse, scannedInput);
@@ -235,19 +273,60 @@ public class CPU {
 				} else if (instrType == 9) {
 					//Char output from operand
 					//immediate addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
 					char out = (char) fuse;
 					pep8View.output(out);
 				} else if (instrType == 10) {
 					//Char output from operand
 					//direct addressing mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					char out = (char) m.getDataAt(fuse);
 					pep8View.output(out);
-				} else if (instrType == 16) {
+				} else if (instrType == 19) {
 					//Bitwise invert the value stored in the accumulator
 					regA.load(myALU.invert(regA.getReg()));
-				} else if (instrType == 17) {
+				}  else if (instrType == 11) {
+					//Bitwise AND (immediate)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short fuse = this.fuseBytes(operSpec1, operSpec2);
+					regA.load(myALU.and(regA, fuse));
+				} else if (instrType == 12) {
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					regA.load(myALU.and(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+				} else if (instrType == 13) {
+					//bitwise OR (immediate)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short fuse = this.fuseBytes(operSpec1, operSpec2);
+					regA.load(myALU.or(regA, fuse));
+				} else if (instrType == 14) {
+					//bitwise OR (direct)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
+				} else if (instrType == 15) { //ROR
+					regA.load(myALU.rotateRight(regA));
+				} else if (instrType == 16) { //ROL
+					regA.load(myALU.rotateLeft(regA));
+				} else if (instrType == 17) { //ASR
+					regA.load(myALU.arithShiftRight(regA));
+				} else if (instrType == 18) { //ASL
+					regA.load(myALU.arithShiftLeft(regA));
+				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
 				}

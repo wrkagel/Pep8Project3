@@ -11,20 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.Scanner;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -41,7 +28,7 @@ import javax.swing.filechooser.FileSystemView;
  ** paste object code button is pasting copy codes into the object code.
  *
  * @author GROUP 6 Taehong Kim
- * @version 10/18/2020
+ * @version 12/13/2020
  */
 public class GUI extends JFrame implements ActionListener{ 
 	/**SerialVersion for GUI class.**/
@@ -164,6 +151,15 @@ public class GUI extends JFrame implements ActionListener{
 	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	/**Tells which character of BatchIO to send**/
 	private int batchIndex = -1;
+	private JPanel steppanel;
+	private JButton stepbutton;
+	private JButton resumebutton;
+	private JCheckBox Nbox;
+	private JCheckBox Zbox;
+	private JCheckBox Vbox;
+	private JCheckBox Cbox;
+
+
 	/**
      * Main method to run CUI methods.
      * @author GROUP6 taehong Kim
@@ -212,47 +208,49 @@ public class GUI extends JFrame implements ActionListener{
 		newButton.setFont(myFont);
 		newButton.addActionListener(this);
 		newButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
-	
-		JButton startButton = new JButton("Start");
-		startButton.setFont(myFont);
-		startButton.addActionListener(this);
-		startButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
 
 		JButton saveButton = new JButton("Save");
 		saveButton.addActionListener(this);
 		saveButton.setFont(myFont);
 		saveButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
-		
-		JButton runCodeButton = new JButton("Run CODE");
-		runCodeButton.addActionListener(this);
-		runCodeButton.setFont(myFont);
-		runCodeButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
 
-		JButton unDoButton = new JButton("Undo");
-		unDoButton.setFont(myFont);
-		unDoButton.setEnabled(false);
-		unDoButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+		JButton runObject = new JButton("Run Object");
+		runObject.setFont(myFont);
+		runObject.addActionListener(this);
+		runObject.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
 
-		JButton reDoButton = new JButton("Redo");
-		reDoButton.setFont(myFont);
-		reDoButton.setEnabled(false);
-		reDoButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
-		
+		JButton debugObjectButton = new JButton("Debug Object");
+		debugObjectButton.addActionListener(this);
+		debugObjectButton.setFont(myFont);
+		debugObjectButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+
+		JButton assebleButton = new JButton("Assemble");
+		assebleButton.setFont(myFont);
+		assebleButton.setEnabled(true);
+		assebleButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+
+		JButton runSourceButton = new JButton("Run Source");
+		runSourceButton.setFont(myFont);
+		runSourceButton.setEnabled(true);
+		runSourceButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+
+		JButton debugSourceButton = new JButton("Debug Source");
+		debugSourceButton.setFont(myFont);
+		debugSourceButton.setEnabled(true);
+		debugSourceButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+
 		/*Setting empty panels to fill empty areas of upPanel*/
 		JPanel emptyPanel = new JPanel();
 		emptyPanel.setLayout(new GridLayout(1,1));
 		emptyPanel.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
 		JPanel emptyPanel2 = new JPanel();
 		emptyPanel2.setLayout(new GridLayout(1,1));
-		emptyPanel2.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));		
-		JPanel emptyPanel3 = new JPanel();
-		emptyPanel3.setLayout(new GridLayout(1,1));
-		emptyPanel3.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
-		
+		emptyPanel2.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+
 		/*Adding whole buttons in UpPanel*/
-		upPanel.add(newButton);upPanel.add(startButton);upPanel.add(saveButton);
-		upPanel.add(runCodeButton);upPanel.add(unDoButton);upPanel.add(reDoButton);
-		upPanel.add(emptyPanel);upPanel.add(emptyPanel2);upPanel.add(emptyPanel3);
+		upPanel.add(newButton);upPanel.add(saveButton);upPanel.add(runObject);
+		upPanel.add(debugObjectButton);upPanel.add(assebleButton);upPanel.add(runSourceButton);
+		upPanel.add(debugSourceButton);upPanel.add(emptyPanel);
 	}
 	
 	/**
@@ -276,7 +274,12 @@ public class GUI extends JFrame implements ActionListener{
 		traceTab.setEditable(false);
 		tabbedPane.addTab("Code", sourceTab); tabbedPane.addTab("Trace", traceTab);
 		lineStartPanel.add(tabbedPane);
-		
+		scroll = new JScrollPane(tabbedPane);
+		scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+		scroll.getHorizontalScrollBar().setUnitIncrement(16);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		lineStartPanel.add(scroll);
+
 		/*Setting object code text areas and add to main Line Start Panel*/
 		ObjCode = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
 		ObjCode.setFont(myFont);
@@ -321,9 +324,10 @@ public class GUI extends JFrame implements ActionListener{
 		InstructionPanel();
 		OperandSpecifier();
 		Operand();
+		step();
 		BatchIO();
 	}
-	
+
 	/**
 	 * Constructor N,Z,V,C checker with labels for cpu panel. 
 	 */
@@ -333,7 +337,7 @@ public class GUI extends JFrame implements ActionListener{
 		Nmark.setFont(myFont);	
 		Nmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Nmark);
-		JCheckBox Nbox = new JCheckBox();
+		Nbox = new JCheckBox();
 		Nbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Nbox);
 			
@@ -342,7 +346,7 @@ public class GUI extends JFrame implements ActionListener{
 		Zmark.setFont(myFont);	
 		Zmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Zmark);	
-		JCheckBox Zbox = new JCheckBox();
+		Zbox = new JCheckBox();
 		Zbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Zbox);
 			
@@ -351,7 +355,7 @@ public class GUI extends JFrame implements ActionListener{
 		Vmark.setFont(myFont);	
 		Vmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Vmark);	
-		JCheckBox Vbox = new JCheckBox();
+		Vbox = new JCheckBox();
 		Vbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Vbox);
 			
@@ -360,7 +364,7 @@ public class GUI extends JFrame implements ActionListener{
 		Cmark.setFont(myFont);	
 		Cmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Cmark);	
-		JCheckBox Cbox = new JCheckBox();
+		Cbox = new JCheckBox();
 		Cbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
 		CpupanelTop.add(Cbox);
 		CpuPanel.add(CpupanelTop,  BorderLayout.NORTH);
@@ -372,7 +376,7 @@ public class GUI extends JFrame implements ActionListener{
 	private void downCpuPanel() {
 		/*Setting down of CPU panel*/
 		Cpupaneldown = new JPanel();
-		Cpupaneldown.setLayout(new GridLayout(7,3));
+		Cpupaneldown.setLayout(new GridLayout(8,3));
 		Cpupaneldown.setPreferredSize(new Dimension(screenSize.width/4,screenSize.height*3/16));	
 		CpuPanel.add(Cpupaneldown, BorderLayout.CENTER);
 	}
@@ -496,8 +500,7 @@ public class GUI extends JFrame implements ActionListener{
 		OperandSpecifier2.setFont(myFont2);
 		Cpupaneldown.add(OperandSpecifier2);		
 	}
-	
-	
+
 	/**
 	 * Constructor for InstructionPanel labels, text areas.
 	 */
@@ -518,7 +521,29 @@ public class GUI extends JFrame implements ActionListener{
 		CpuPanel.add(Cpupaneldown);
 		CenterPanel.add(CpuPanel, BorderLayout.SOUTH);		
 	}
-	
+
+	/**
+	 * step and resume buttons in Central down panel
+	 */
+	private void step(){
+		steppanel = new JPanel();
+		steppanel.setFont(myFont2);
+		steppanel.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
+		Cpupaneldown.add(steppanel);
+		stepbutton = new JButton("Single Step");
+		stepbutton.addActionListener(this);
+		stepbutton.setEnabled(false);
+		stepbutton.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
+		stepbutton.setFont(myFont2);
+		Cpupaneldown.add(stepbutton);
+		resumebutton = new JButton("Resume");
+		resumebutton.addActionListener(this);
+		resumebutton.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
+		resumebutton.setFont(myFont2);
+		resumebutton.setEnabled(false);
+		Cpupaneldown.add(resumebutton);
+	}
+
 	/**
 	 * Constructor for BatchIO and terminal text area with tabs.
 	 */
@@ -610,41 +635,92 @@ public class GUI extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String userinput = e.getActionCommand();
 		if(userinput.equals("Open")||userinput.equals("Load")) {
-			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-		    FileNameExtensionFilter restrict = new FileNameExtensionFilter("ONLY .txt file", "txt"); 
-		    chooser.addChoosableFileFilter(restrict); 
-			int read = chooser.showSaveDialog(null);   
-		    // if the user selects a file 
-            if (read == JFileChooser.APPROVE_OPTION){ 
-            	try {
-                    BufferedReader in;
-                    in = new BufferedReader(new FileReader(chooser.getSelectedFile()));
-                    String line = in.readLine();
-                    while (line != null) {
-                    	ObjCode.setText(ObjCode.getText()+ line + "\n" ); //line + "\n"
-                        line = in.readLine();
-                    } in.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException(
-                            "creation is not possible.");
-                }     	
-            } 
-            else
-            	ObjCode.setText("Please choose .txt file or type object Code here"); 
+			JFileChooser chooser = new JFileChooser();
+			StringBuilder sb = new StringBuilder();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"Text files", "txt");
+			chooser.setFileFilter(filter);
+			int returnVal = chooser.showOpenDialog(frame);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile();
+				//Check that the file can actually be read from.
+				if (!file.canRead()) {
+					throw new IllegalArgumentException(file.getName() + " cannot be read.");
+				} else {
+					try (Scanner sc = new Scanner(file)) {
+						while (sc.hasNext()) {
+							sb.append(sc.nextLine() + '\n');
+						}
+					} catch (FileNotFoundException e1) {
+						JOptionPane.showMessageDialog(frame, e1.getMessage());
+					}
+				}
+			}
+			sourceTab.setText(sb.toString());
         } else if(userinput.equals("Save")) {
-        	 try {
-                 wordsScanner = new Scanner("INPUT:"+ObjCode.getText().toString()+"\n OUTPUT:" + Outputtext.getText().toString());  
-                 final PrintWriter writer = new PrintWriter(new FileOutputStream("src/result.txt"));
-                 while (wordsScanner.hasNextLine()) {
-                     writer.println(wordsScanner.nextLine());
-                 }
-                 writer.close();
-             } catch (final FileNotFoundException exception) {
-                 System.out.println("Please check your words input file name \n" + exception);
-             }
-        } else if(userinput.equals("Start")||userinput.equals("Run CODE")||userinput.equals("Run")) {
+			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"Text files", "txt");
+			chooser.setFileFilter(filter);
+			//Loop until the user has successfully chosen a file location to save to or has cancelled out.
+			boolean loop = true;
+			while (loop) {
+				int returnVal = chooser.showSaveDialog(frame);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					File outputFile = chooser.getSelectedFile();
+					//Add the .txt file extension if the user didn't do it already
+					if (!outputFile.getAbsolutePath().endsWith(".txt")) {
+						outputFile = new File(outputFile.getAbsolutePath() + ".txt");
+					}
+					try {
+						//Try creating a file at the chosen location
+						if (outputFile.createNewFile()) {
+							FileWriter fw = new FileWriter(outputFile);
+							fw.append(sourceTab.getText());
+							fw.close();
+							loop = false;
+						} else {
+							//Ask the user if they want to overwrite an existing file.
+							int overwrite = JOptionPane.showConfirmDialog(frame,
+									"This file already exists would you like to replace it?");
+							if (overwrite == JOptionPane.YES_OPTION) {
+								if (!outputFile.delete()) {
+									//Inform the user that the file cannot be replaced.
+									JOptionPane.showMessageDialog(frame,
+											outputFile.getName() +" could not be replaced.");
+								} else {
+									if (outputFile.createNewFile()) {
+										FileWriter fw = new FileWriter(outputFile);
+										fw.append(sourceTab.getText());
+										fw.close();
+										loop = false;
+									}
+								}
+							} else {
+								if (overwrite != JOptionPane.NO_OPTION) {
+									loop = false;
+								}
+							}
+						}
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(frame, e1.getMessage());
+					}
+				} else {
+					loop = false;
+				}
+			}
+        } else if(userinput.equals("Run Object")) {
         	firePropertyChange("Start", null, ObjCode.getText());
-        } else if(userinput.equals("New")) {
+        } else if(userinput.equals("Debug Object")) {
+			firePropertyChange("Debug Object", null, ObjCode.getText());
+		} else if(userinput.equals("Assemble")) {
+			firePropertyChange("Assemble", null, sourceTab.getText());
+		} else if(userinput.equals("Run Source")) {
+			firePropertyChange("Run Source", null, sourceTab.getText());
+		} else if(userinput.equals("Debug Source")) {
+			firePropertyChange("Debug Source", null, sourceTab.getText());
+		} else if(userinput.equals("New")) {
+			sourceTab.setText("");
 			ObjCode.setText("");
 			Accumulatorout1.setText("");
 			Accumulatorout2.setText("");
@@ -665,8 +741,6 @@ public class GUI extends JFrame implements ActionListener{
         }
 	}
 
-	//Adding setters for textFields and adding getters for when input is needed.
-
 	/**
 	 * Sets the memory text area based on the copy of memory given by the Machine class.
 	 * @param memCopy byte array copy of the memory.
@@ -686,6 +760,15 @@ public class GUI extends JFrame implements ActionListener{
 		}
 		sb.replace(0, 1, "");
 		Memory.setText(sb.toString());
+		Memory.setCaretPosition(0);
+	}
+
+	/**
+	 * getter for current memory information
+	 * @return String information about memory
+	 */
+	public String getMemText(){
+		return Memory.getText();
 	}
 
 	/**
@@ -721,6 +804,117 @@ public class GUI extends JFrame implements ActionListener{
 	 */
 	public void output(char c) {
 		Outputtext.setText(Outputtext.getText() + c);
+	}
+
+	/**
+	 * Setter for source tab
+	 * @param str string input values
+	 */
+	public void setSourceTab(String str){
+		sourceTab.setText(str);
+	}
+
+	/**
+	 * getter for source code tab
+	 * @return current source tab data
+	 */
+	public String getSourceCode(){
+		return sourceTab.getText();
+	}
+
+	/**
+	 * Setter for object Code area
+	 * @param str input values for object code
+	 */
+	public void setObjectCode(String str){
+		ObjCode.setText(str);
+	}
+
+	/**
+	 * getter for object code area
+	 * @return current object code area string data
+	 */
+	public String getObjectCode(){
+		return ObjCode.getText();
+	}
+
+	/**
+	 * setter for Aslisting area
+	 * @param str string input for aslisting area
+	 */
+	public void setAsListing(String str){
+		AsListing.setText(str);
+	}
+
+	/**
+	 * getter for Aslisting area
+	 * @return current Aslisting area string data
+	 */
+	public String getAsListing(){
+		return AsListing.getText();
+	}
+
+	/**
+	 * Setter for Nbox status
+	 * @param b boolean value for Nbox
+	 */
+	public void setNbox(boolean b){
+		Nbox.setSelected(b);
+	}
+
+	/**
+	 * getter for N box status
+	 * @return return boolean value for current Nbox
+	 */
+	public boolean getNbox(){
+		return Nbox.isSelected();
+	}
+	/**
+	 * Setter for Zbox status
+	 * @param b boolean value for Zbox
+	 */
+	public void setZbox(boolean b){
+		Zbox.setSelected(b);
+	}
+
+	/**
+	 * getter for Z box status
+	 * @return return boolean value for current Zbox
+	 */
+	public boolean getZbox(){
+		return Zbox.isSelected();
+	}
+
+	/**
+	 * Setter for Vbox status
+	 * @param b boolean value for Nbox
+	 */
+	public void setVbox(boolean b){
+		Vbox.setSelected(b);
+	}
+
+	/**
+	 * getter for V box status
+	 * @return return boolean value for current Vbox
+	 */
+	public boolean getVbox(){
+		return Vbox.isSelected();
+	}
+
+	/**
+	 * Setter for Vbox status
+	 * @param b boolean value for Vbox
+	 */
+	public void setCbox(boolean b){
+		Cbox.setSelected(b);
+	}
+
+	/**
+	 * getter for C box status
+	 * @return return boolean value for current Cbox
+	 */
+	public boolean getCbox(){
+		return Cbox.isSelected();
 	}
 
 }
