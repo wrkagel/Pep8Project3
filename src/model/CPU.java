@@ -142,10 +142,10 @@ public class CPU {
 				rtnVal = 17;
 			} else if (byte1 == (byte) 0x1C) { //ASL
 				rtnVal = 18;
-			} else if (byte1 == (byte) 64) {
+			} else if (byte1 == (byte) 0x18) {
 				//Bitwise invert value in accumulator
 				rtnVal = 19;
-			} else if (byte1 == (byte) 66) {
+			} else if (byte1 == (byte) 0x1A) {
 				//Negate value in accumulator
 				rtnVal = 20;
 			}
