@@ -326,6 +326,9 @@ public class CPU {
 					regA.load(myALU.arithShiftRight(regA));
 				} else if (instrType == 18) { //ASL
 					regA.load(myALU.arithShiftLeft(regA));
+				} else if (instrType == 19) {
+					//Bitwise invert the value stored in the accumulator
+					regA.load(myALU.invert(regA.getReg()));
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));

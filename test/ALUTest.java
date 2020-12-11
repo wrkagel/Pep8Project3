@@ -1,13 +1,12 @@
 import model.ALU;
 import model.Register;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import view.GUI;
 
 import javax.swing.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * JUnit4 tests for the ALU class. All tests should pass.
@@ -97,5 +96,23 @@ public class ALUTest {
 	public void testArithShiftRight() {
 		r.load((short) 10);
 		assertEquals(5, alu.arithShiftRight(r));
+	}
+
+	@Test
+	public void testInvertZFlag() {
+		r.load((short) -1);
+		r.load(alu.invert(r.getReg()));
+		assertFalse(alu.nFlagIsSet());
+		assertTrue(alu.zFlagIsSet());
+		assertEquals((short) 0, r.getReg());
+	}
+
+	@Test
+	public void testInvertNFlag() {
+		r.load((short) 0);
+		r.load(alu.invert(r.getReg()));
+		assertTrue(alu.nFlagIsSet());
+		assertFalse(alu.zFlagIsSet());
+		assertEquals((short) -1, r.getReg());
 	}
 }

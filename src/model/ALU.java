@@ -138,7 +138,24 @@ public class ALU {
 	 */
 	public short negate(short x1) {
 		short result = (short) (x1 * -1);
-		//Do flag checking here
+		if (result < 0) {
+			nFlag.setFlag(true);
+		} else {
+			nFlag.setFlag(false);
+		}
+		if (result == 0) {
+			zFlag.setFlag(true);
+		} else {
+			zFlag.setFlag(false);
+		}
+		if (result == x1) {
+			vFlag.setFlag(true);
+		} else {
+			vFlag.setFlag(false);
+		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
+		view.setCbox(cFlag.isSet());
 		return result;
 	}
 
@@ -153,7 +170,18 @@ public class ALU {
 			boolArray[i] = !boolArray[i];
 		}
 		short result = toShort(boolArray);
-		//Do flag checking here
+		if (result < 0) {
+			nFlag.setFlag(true);
+		} else {
+			nFlag.setFlag(false);
+		}
+		if (result == 0) {
+			zFlag.setFlag(true);
+		} else {
+			zFlag.setFlag(false);
+		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
 		return result;
 	}
 
