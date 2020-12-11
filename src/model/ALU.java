@@ -1,17 +1,27 @@
 package model;
 
+import view.GUI;
+
 /**
  * Represents an Arithmetic and Logic Unit used by a virtual computer.
  * @author Group 6: John Morton
  * @version 10/16/2020
  */
 public class ALU {
-	
+	private Flag nFlag;
+	private Flag zFlag;
+	private Flag vFlag;
+	private Flag cFlag;
+	private GUI view;
 	/**
 	 * Initializes our ALU.
 	 */
-	public ALU() {
-	
+	public ALU(GUI v) {
+		nFlag = Flag.N;
+		zFlag = Flag.Z;
+		vFlag = Flag.V;
+		cFlag = Flag.C;
+		view = v;
 	}
 	
 	/**
@@ -67,7 +77,7 @@ public class ALU {
 	 * @param reg The register where our second short value is stored.
 	 * @return The sum of our two short values.
 	 */
-	public short add(short x, Register reg) {
+	public short add(Register reg, short x) {
 		return add(reg.getReg(), x);
 	}
 	
@@ -119,6 +129,184 @@ public class ALU {
 	 */
 	public short subtract(short x, Register reg) {
 		return subtract(reg.getReg(), x);
+	}
+
+	/**
+	 * Returns a negated short value.
+	 * @param x1 input short
+	 * @return x1 * -1;
+	 */
+	public short negate(short x1) {
+		short result = (short) (x1 * -1);
+		if (result < 0) {
+			nFlag.setFlag(true);
+		} else {
+			nFlag.setFlag(false);
+		}
+		if (result == 0) {
+			zFlag.setFlag(true);
+		} else {
+			zFlag.setFlag(false);
+		}
+		if (result == x1) {
+			vFlag.setFlag(true);
+		} else {
+			vFlag.setFlag(false);
+		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
+		view.setCbox(cFlag.isSet());
+		return result;
+	}
+
+	/**
+	 * Bitwise inverts a short value.
+	 * @param x1 input short value.
+	 * @return inverted short
+	 */
+	public short invert(short x1) {
+		boolean[] boolArray = toBoolArray(x1);
+		for (int i = 0; i < boolArray.length; i++) {
+			boolArray[i] = !boolArray[i];
+		}
+		short result = toShort(boolArray);
+		if (result < 0) {
+			nFlag.setFlag(true);
+		} else {
+			nFlag.setFlag(false);
+		}
+		if (result == 0) {
+			zFlag.setFlag(true);
+		} else {
+			zFlag.setFlag(false);
+		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
+		return result;
+	}
+
+	public short and(Register r, short x2) {
+		short x1 = r.getReg();
+		short ret = (short) (x1 & x2);
+		if (ret < 0) {
+			nFlag.setFlag(true);
+			zFlag.setFlag(false);
+			view.setNbox(true);
+		} else if (ret == 0) {
+			nFlag.setFlag(false);
+			zFlag.setFlag(true);
+			view.setZbox(true);
+		}
+		return ret;
+	}
+
+	public short or(Register r, short x2) {
+		short x1 = r.getReg();
+		short ret = (short) (x1 | x2);
+		if (ret < 0) {
+			nFlag.setFlag(true);
+			view.setNbox(true);
+		} else if (ret == 0) {
+			zFlag.setFlag(true);
+			view.setZbox(true);
+		}
+		return ret;
+	}
+
+	public short arithShiftLeft(Register r) {
+		resetFlags();
+		short x = r.getReg();
+		boolean[] boolArr1 = toBoolArray(x);
+		cFlag.setFlag(boolArr1[0]);
+		view.setCbox(boolArr1[0]);
+		x <<= 1;
+		boolean[] boolArr2 = toBoolArray(x);
+		if (boolArr2[0] != boolArr1[0]) {
+			vFlag.setFlag(true);
+			view.setVbox(true);
+		}
+
+		if (x < 0) {
+			nFlag.setFlag(true);
+			view.setNbox(true);
+		} else if (x == 0) {
+			zFlag.setFlag(true);
+			view.setZbox(true);
+		}
+
+		return x;
+	}
+
+	public short arithShiftRight(Register r) {
+		resetFlags();
+		short x = r.getReg();
+		boolean[] boolArr = toBoolArray(x);
+		cFlag.setFlag(boolArr[boolArr.length - 1]);
+		view.setCbox(boolArr[boolArr.length - 1]);
+
+		x >>= 1;
+		if (x < 0) {
+			nFlag.setFlag(true);
+			view.setNbox(true);
+		} else if (x == 0) {
+			zFlag.setFlag(true);
+			view.setZbox(true);
+		}
+
+		return x;
+	}
+
+	public short rotateLeft(Register r) {
+		short x = r.getReg();
+		boolean carryBit = cFlag.isSet();
+		resetFlags();
+		boolean[] boolArr1 = toBoolArray(x);
+		cFlag.setFlag(boolArr1[0]);
+		view.setCbox(boolArr1[0]);
+		x <<= 1;
+		boolean[] boolArr2 = toBoolArray(x);
+		boolArr2[boolArr2.length - 1] = carryBit;
+		return toShort(boolArr2);
+	}
+
+	public short rotateRight(Register r) {
+		short x = r.getReg();
+		boolean carryBit = cFlag.isSet();
+		resetFlags();
+		boolean[] boolArr1 = toBoolArray(x);
+		cFlag.setFlag(boolArr1[boolArr1.length - 1]);
+		view.setCbox(boolArr1[boolArr1.length - 1]);
+		x >>= 1;
+		boolean[] boolArr2 = toBoolArray(x);
+		boolArr2[0] = carryBit;
+		return toShort(boolArr2);
+	}
+
+	public boolean nFlagIsSet() {
+		return nFlag.isSet();
+	}
+
+	public boolean zFlagIsSet() {
+		return zFlag.isSet();
+	}
+
+	public boolean vFlagIsSet() {
+		return vFlag.isSet();
+	}
+
+	public boolean cFlagIsSet() {
+		return cFlag.isSet();
+	}
+
+	private void resetFlags() {
+		view.setNbox(false);
+		view.setZbox(false);
+		view.setVbox(false);
+		view.setCbox(false);
+		nFlag.setFlag(false);
+		zFlag.setFlag(false);
+		vFlag.setFlag(false);
+		cFlag.setFlag(false);
 	}
 	
 	/**
