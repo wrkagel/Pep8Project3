@@ -138,24 +138,12 @@ public class ALU {
 	 */
 	public short negate(short x1) {
 		short result = (short) (x1 * -1);
-		if (result < 0) {
-			nFlag.setFlag(true);
-		} else {
-			nFlag.setFlag(false);
-		}
-		if (result == 0) {
-			zFlag.setFlag(true);
-		} else {
-			zFlag.setFlag(false);
-		}
-		if (result == x1) {
-			vFlag.setFlag(true);
-		} else {
-			vFlag.setFlag(false);
-		}
+		nFlag.setFlag(result < 0);
+		zFlag.setFlag(result == 0);
+		vFlag.setFlag(result == x1);
 		view.setNbox(nFlag.isSet());
 		view.setZbox(zFlag.isSet());
-		view.setCbox(cFlag.isSet());
+		view.setVbox(vFlag.isSet());
 		return result;
 	}
 
@@ -170,16 +158,8 @@ public class ALU {
 			boolArray[i] = !boolArray[i];
 		}
 		short result = toShort(boolArray);
-		if (result < 0) {
-			nFlag.setFlag(true);
-		} else {
-			nFlag.setFlag(false);
-		}
-		if (result == 0) {
-			zFlag.setFlag(true);
-		} else {
-			zFlag.setFlag(false);
-		}
+		nFlag.setFlag(result < 0);
+		zFlag.setFlag(result == 0);
 		view.setNbox(nFlag.isSet());
 		view.setZbox(zFlag.isSet());
 		return result;
@@ -191,12 +171,12 @@ public class ALU {
 		if (ret < 0) {
 			nFlag.setFlag(true);
 			zFlag.setFlag(false);
-			view.setNbox(true);
 		} else if (ret == 0) {
 			nFlag.setFlag(false);
 			zFlag.setFlag(true);
-			view.setZbox(true);
 		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
 		return ret;
 	}
 
@@ -205,11 +185,13 @@ public class ALU {
 		short ret = (short) (x1 | x2);
 		if (ret < 0) {
 			nFlag.setFlag(true);
-			view.setNbox(true);
+			zFlag.setFlag(false);
 		} else if (ret == 0) {
 			zFlag.setFlag(true);
-			view.setZbox(true);
+			nFlag.setFlag(false);
 		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
 		return ret;
 	}
 
