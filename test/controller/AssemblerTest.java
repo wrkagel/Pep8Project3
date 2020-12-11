@@ -1,3 +1,4 @@
+//Updated from control to controller for Project #3
 package controller;
 
 
@@ -84,7 +85,7 @@ class AssemblerTest {
     @Test
     void testGetErrorMessagesInvalidMnemonic() {
         assembler.assembleSourceCode("ADDB 0x3008,sx\n.end");
-        assertEquals("No enum constant control.Mnemonic.ADDB at line 0.\n",
+        assertEquals("No enum constant controller.Mnemonic.ADDB at line 0.\n",
                 assembler.getErrorMessages().get(0));
     }
 
