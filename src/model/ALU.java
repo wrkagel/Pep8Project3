@@ -31,6 +31,7 @@ public class ALU {
 	 * @return The sum of our two short values.
 	 */
 	public short add(short x1, short x2) {
+		resetFlags();
 		boolean[] boolArray1 = toBoolArray(x1);
 		boolean[] boolArray2 = toBoolArray(x2);
 		boolean val1 = false;
@@ -68,7 +69,18 @@ public class ALU {
 				}
 			}
 		}
-		return toShort(booleanResult);
+		short result = toShort(booleanResult);
+		nFlag.setFlag(result < 0);
+		zFlag.setFlag(result == 0);
+		if ((x1 < 0 && x2 < 0 && result >= 0) || (x1 > 0 && x2 > 0 && result < 0)) {
+			vFlag.setFlag(true);
+			cFlag.setFlag(true);
+		}
+		view.setZbox(zFlag.isSet());
+		view.setNbox(nFlag.isSet());
+		view.setCbox(cFlag.isSet());
+		view.setVbox(vFlag.isSet());
+		return result;
 	}
 	
 	/**
@@ -89,6 +101,7 @@ public class ALU {
 	 */
 	public short subtract(short x1, short x2) {
 		//subtract by adding the negative of the second number to the first
+		resetFlags();
 		boolean[] boolArray2 = toBoolArray(x2);
 		for (int i = 0; i < boolArray2.length; i++) {
 			if (boolArray2[i]) {
@@ -108,7 +121,10 @@ public class ALU {
 				}
 			}
 		}
-		return add(x1, toShort(boolArray2));
+		short result = add(x1, toShort(boolArray2));
+		cFlag.setFlag(!(x1 == 0 || x2 == 0) && Short.toUnsignedInt(x1) >= Short.toUnsignedInt(x2));
+		view.setCbox(cFlag.isSet());
+		return result;
 	}
 	
 	/**
