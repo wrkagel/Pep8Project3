@@ -118,7 +118,7 @@ public class ALU {
 			}
 		}
 		short result = add(x1, toShort(boolArray2));
-		cFlag.setFlag(Short.toUnsignedInt(x1) >= Short.toUnsignedInt(x2));
+		cFlag.setFlag(!(x1 == 0 || x2 == 0) && Short.toUnsignedInt(x1) >= Short.toUnsignedInt(x2));
 		return result;
 	}
 	
