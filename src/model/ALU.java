@@ -275,6 +275,13 @@ public class ALU {
 		return toShort(boolArr2);
 	}
 
+	public void compare(Register r, short x2) {
+		resetFlags();
+		short x1 = r.getReg();
+		// by subtracting without returning, comparison is complete
+		subtract(r, x2);
+	}
+
 	public boolean nFlagIsSet() {
 		return nFlag.isSet();
 	}
