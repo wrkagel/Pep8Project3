@@ -38,6 +38,12 @@ public class Pep8Sim {
             assembleSourceCode();
             startMachine();
         });
+        pep8View.addPropertyChangeListener("Debug Object", e -> {
+            //Not yet implemented
+        });
+        pep8View.addPropertyChangeListener("Debug Sourc", e-> {
+            //Not yet implemented
+        });
     }
 
     /**
