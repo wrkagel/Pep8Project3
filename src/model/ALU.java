@@ -68,7 +68,18 @@ public class ALU {
 				}
 			}
 		}
-		return toShort(booleanResult);
+		if (carry) {
+			view.setCbox(true);
+		}
+		short s = toShort(booleanResult);
+		if (s == 0) {
+			zFlag.setFlag(true);
+			view.setZbox(true);
+		} else if (s < 0) {
+			nFlag.setFlag(true);
+			view.setNbox(true);
+		}
+		return s;
 	}
 	
 	/**
