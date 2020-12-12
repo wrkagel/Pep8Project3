@@ -148,6 +148,12 @@ public class CPU {
 			} else if (byte1 == (byte) 0x1A) {
 				//Negate value in accumulator
 				rtnVal = 20;
+			} else if (byte1 == (byte) 0xB0) {
+				//Compare (immediate)
+				rtnVal = 21;
+			} else if (byte1 == (byte) 0xB1) {
+				//Compare (direcT)
+				rtnVal = 22;
 			}
 		}
 		
@@ -332,6 +338,19 @@ public class CPU {
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
+				} else if (instrType == 21) {
+					//Compare (immediate)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					myALU.compare(regA, fuseBytes(operSpec1, operSpec2));
+				} else if (instrType == 22) {
+					//Compare (direct)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					myALU.compare(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1))));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
