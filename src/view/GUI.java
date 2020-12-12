@@ -228,16 +228,19 @@ public class GUI extends JFrame implements ActionListener{
 		assebleButton.setFont(myFont);
 		assebleButton.setEnabled(true);
 		assebleButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+		assebleButton.addActionListener(this);
 
 		JButton runSourceButton = new JButton("Run Source");
 		runSourceButton.setFont(myFont);
 		runSourceButton.setEnabled(true);
 		runSourceButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+		runSourceButton.addActionListener(this);
 
 		JButton debugSourceButton = new JButton("Debug Source");
 		debugSourceButton.setFont(myFont);
 		debugSourceButton.setEnabled(true);
 		debugSourceButton.setPreferredSize(new Dimension (screenSize.width/12,screenSize.height*3/50));
+		debugSourceButton.addActionListener(this);
 
 		/*Setting empty panels to fill empty areas of upPanel*/
 		JPanel emptyPanel = new JPanel();
@@ -710,15 +713,15 @@ public class GUI extends JFrame implements ActionListener{
 				}
 			}
         } else if(userinput.equals("Run Object")) {
-        	firePropertyChange("Start", null, ObjCode.getText());
+        	firePropertyChange("Start", null, null);
         } else if(userinput.equals("Debug Object")) {
-			firePropertyChange("Debug Object", null, ObjCode.getText());
+			firePropertyChange("Debug Object", null, null);
 		} else if(userinput.equals("Assemble")) {
-			firePropertyChange("Assemble", null, sourceTab.getText());
+			firePropertyChange("Assemble", null, null);
 		} else if(userinput.equals("Run Source")) {
-			firePropertyChange("Run Source", null, sourceTab.getText());
+			firePropertyChange("Run Source", null, null);
 		} else if(userinput.equals("Debug Source")) {
-			firePropertyChange("Debug Source", null, sourceTab.getText());
+			firePropertyChange("Debug Source", null, null);
 		} else if(userinput.equals("New")) {
 			sourceTab.setText("");
 			ObjCode.setText("");
