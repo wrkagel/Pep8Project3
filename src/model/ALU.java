@@ -131,31 +131,67 @@ public class ALU {
 		return subtract(reg.getReg(), x);
 	}
 
+	/**
+	 * Returns a negated short value.
+	 * @param x1 input short
+	 * @return x1 * -1;
+	 */
+	public short negate(short x1) {
+		short result = (short) (x1 * -1);
+		nFlag.setFlag(result < 0);
+		zFlag.setFlag(result == 0);
+		vFlag.setFlag(result == x1);
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
+		view.setVbox(vFlag.isSet());
+		return result;
+	}
+
+	/**
+	 * Bitwise inverts a short value.
+	 * @param x1 input short value.
+	 * @return inverted short
+	 */
+	public short invert(short x1) {
+		boolean[] boolArray = toBoolArray(x1);
+		for (int i = 0; i < boolArray.length; i++) {
+			boolArray[i] = !boolArray[i];
+		}
+		short result = toShort(boolArray);
+		nFlag.setFlag(result < 0);
+		zFlag.setFlag(result == 0);
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
+		return result;
+	}
+
 	public short and(Register r, short x2) {
 		short x1 = r.getReg();
-		resetFlags();
 		short ret = (short) (x1 & x2);
 		if (ret < 0) {
 			nFlag.setFlag(true);
-			view.setNbox(true);
+			zFlag.setFlag(false);
 		} else if (ret == 0) {
+			nFlag.setFlag(false);
 			zFlag.setFlag(true);
-			view.setZbox(true);
 		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
 		return ret;
 	}
 
 	public short or(Register r, short x2) {
-//		resetFlags();
 		short x1 = r.getReg();
 		short ret = (short) (x1 | x2);
 		if (ret < 0) {
 			nFlag.setFlag(true);
-			view.setNbox(true);
+			zFlag.setFlag(false);
 		} else if (ret == 0) {
 			zFlag.setFlag(true);
-			view.setZbox(true);
+			nFlag.setFlag(false);
 		}
+		view.setNbox(nFlag.isSet());
+		view.setZbox(zFlag.isSet());
 		return ret;
 	}
 

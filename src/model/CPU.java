@@ -142,6 +142,12 @@ public class CPU {
 				rtnVal = 17;
 			} else if (byte1 == (byte) 0x1C) { //ASL
 				rtnVal = 18;
+			} else if (byte1 == (byte) 0x18) {
+				//Bitwise invert value in accumulator
+				rtnVal = 19;
+			} else if (byte1 == (byte) 0x1A) {
+				//Negate value in accumulator
+				rtnVal = 20;
 			}
 		}
 		
@@ -273,8 +279,6 @@ public class CPU {
 					short fuse = this.fuseBytes(operSpec1, operSpec2);
 					char out = (char) fuse;
 					pep8View.output(out);
-
-					
 				} else if (instrType == 10) {
 					//Char output from operand
 					//direct addressing mode
@@ -284,7 +288,10 @@ public class CPU {
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					char out = (char) m.getDataAt(fuse);
 					pep8View.output(out);
-				} else if (instrType == 11) {
+				} else if (instrType == 19) {
+					//Bitwise invert the value stored in the accumulator
+					regA.load(myALU.invert(regA.getReg()));
+				}  else if (instrType == 11) {
 					//Bitwise AND (immediate)
 					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
 					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
@@ -319,6 +326,12 @@ public class CPU {
 					regA.load(myALU.arithShiftRight(regA));
 				} else if (instrType == 18) { //ASL
 					regA.load(myALU.arithShiftLeft(regA));
+				} else if (instrType == 19) {
+					//Bitwise invert the value stored in the accumulator
+					regA.load(myALU.invert(regA.getReg()));
+				} else if (instrType == 20) {
+					//Negate the value stored in the accumulator
+					regA.load(myALU.negate(regA.getReg()));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
