@@ -76,6 +76,10 @@ public class ALU {
 			vFlag.setFlag(true);
 			cFlag.setFlag(true);
 		}
+		view.setZbox(zFlag.isSet());
+		view.setNbox(nFlag.isSet());
+		view.setCbox(cFlag.isSet());
+		view.setVbox(vFlag.isSet());
 		return result;
 	}
 	
@@ -119,6 +123,7 @@ public class ALU {
 		}
 		short result = add(x1, toShort(boolArray2));
 		cFlag.setFlag(!(x1 == 0 || x2 == 0) && Short.toUnsignedInt(x1) >= Short.toUnsignedInt(x2));
+		view.setCbox(cFlag.isSet());
 		return result;
 	}
 	
