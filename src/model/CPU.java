@@ -360,10 +360,7 @@ public class CPU {
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					char out = (char) m.getDataAt(fuse);
 					pep8View.output(out);
-				} else if (instrType == 19) {
-					//Bitwise invert the value stored in the accumulator
-					regA.load(myALU.invert(regA.getReg()));
-				}  else if (instrType == 11) {
+				} else if (instrType == 11) {
 					//Bitwise AND (immediate)
 					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
 					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
@@ -392,24 +389,18 @@ public class CPU {
 					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				} else if (instrType == 15) { //ROR
 					regA.load(myALU.rotateRight(regA));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 16) { //ROL
 					regA.load(myALU.rotateLeft(regA));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 17) { //ASR
 					regA.load(myALU.arithShiftRight(regA));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 18) { //ASL
 					regA.load(myALU.arithShiftLeft(regA));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 19) {
 					//Bitwise invert the value stored in the accumulator
 					regA.load(myALU.invert(regA.getReg()));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
-					progCounter.offset((byte) 2);
 				} else if (instrType == 21) {
 					//Branch Unconditional
 					//Immediate Addressing Mode
