@@ -1,4 +1,5 @@
 
+import model.CPU;
 import model.Memory;
 import model.CPU;
 import org.junit.Before;

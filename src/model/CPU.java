@@ -220,7 +220,14 @@ public class CPU {
 				//Branch if C Flag == true
 				//Direct Addressing Mode
 				rtnVal = 38;
+			} else if (byte1 == (byte) 0xB0) {
+				//Compare (immediate)
+				rtnVal = 39;
+			} else if (byte1 == (byte) 0xB1) {
+				//Compare (direct)
+				rtnVal = 40;
 			}
+
 		}
 		
 		if (rtnVal == 99) {
@@ -392,20 +399,20 @@ public class CPU {
 					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				} else if (instrType == 15) { //ROR
 					regA.load(myALU.rotateRight(regA));
-					progCounter.offset((byte) 2);
+//					progCounter.offset((byte) 2);
 				} else if (instrType == 16) { //ROL
 					regA.load(myALU.rotateLeft(regA));
-					progCounter.offset((byte) 2);
+//					progCounter.offset((byte) 2);
 				} else if (instrType == 17) { //ASR
 					regA.load(myALU.arithShiftRight(regA));
 					progCounter.offset((byte) 2);
 				} else if (instrType == 18) { //ASL
 					regA.load(myALU.arithShiftLeft(regA));
-					progCounter.offset((byte) 2);
+//					progCounter.offset((byte) 2);
 				} else if (instrType == 19) {
 					//Bitwise invert the value stored in the accumulator
 					regA.load(myALU.invert(regA.getReg()));
-					progCounter.offset((byte) 2);
+//					progCounter.offset((byte) 2);
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
@@ -627,6 +634,19 @@ public class CPU {
 					} else {
 						progCounter.offset((byte) 2);
 					}
+				} else if (instrType == 39) {
+					//Compare (immediate)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					myALU.compare(regA, fuseBytes(operSpec1, operSpec2));
+				} else if (instrType == 40) {
+					//Compare (direct)
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					progCounter.offset((byte) 2);
+					short address = this.calculateDirectAddress(operSpec1, operSpec2);
+					myALU.compare(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1))));
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");
