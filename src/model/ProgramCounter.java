@@ -15,6 +15,10 @@ public class ProgramCounter extends Register {
 		load((short) (getReg() + i));
 	}
 
+	public void setPC(short newLoc) {
+		load(newLoc);
+	}
+
 	public void reset() {
 		load((short) 0);
 	}
