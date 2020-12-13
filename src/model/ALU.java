@@ -5,7 +5,7 @@ import view.GUI;
 /**
  * Represents an Arithmetic and Logic Unit used by a virtual computer.
  * @author Group 6: John Morton
- * @version 10/16/2020
+ * @version 12/13/2020
  */
 public class ALU {
 	private Flag nFlag;
