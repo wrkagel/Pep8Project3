@@ -68,7 +68,7 @@ public class ALU {
 				}
 			}
 		}
-		return s;
+		return toShort(booleanResult);
 	}
 	
 	/**
