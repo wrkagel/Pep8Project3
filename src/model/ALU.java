@@ -285,7 +285,7 @@ public class ALU {
 		// by subtracting without returning, comparison is complete
 		subtract(r, x2);
 		if (vFlag.isSet()) {
-			nFlag.setFlag(true);
+			nFlag.setFlag(!nFlag.isSet());
 		}
 	}
 

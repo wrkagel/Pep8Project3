@@ -1,12 +1,15 @@
 import model.ALU;
 import model.Register;
+
 import org.junit.Before;
 import org.junit.Test;
 import view.GUI;
 
 import javax.swing.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * JUnit4 tests for the ALU class. All tests should pass.
