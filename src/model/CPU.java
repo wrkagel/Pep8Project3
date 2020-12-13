@@ -148,6 +148,78 @@ public class CPU {
 			} else if (byte1 == (byte) 0x1A) {
 				//Negate value in accumulator
 				rtnVal = 20;
+			} else if (byte1 == (byte) 0x04) {
+				//Branch Unconditional
+				//Immediate Addressing Mode
+				rtnVal = 21;
+			} else if (byte1 == (byte) 0x05) {
+				//Branch Unconditional
+				//Direct Addressing Mode
+				rtnVal = 22;
+			} else if (byte1 == (byte) 0x06) {
+				//Branch if Less Than or Equal To
+				//Immediate Addressing Mode
+				rtnVal = 23;
+			} else if (byte1 == (byte) 0x07) {
+				//Branch if Less Than or Equal To
+				//Direct Addressing Mode
+				rtnVal = 24;
+			} else if (byte1 == (byte) 0x08) {
+				//Branch if Less Than
+				//Immediate Addressing Mode
+				rtnVal = 25;
+			} else if (byte1 == (byte) 0x09) {
+				//Branch if Less Than
+				//Direct Addressing Mode
+				rtnVal = 26;
+			} else if (byte1 == (byte) 0x0A) {
+				//Branch if Equal To
+				//Immediate Addressing Mode
+				rtnVal = 27;
+			} else if (byte1 == (byte) 0x0B) {
+				//Branch if Equal To
+				//Direct Addressing Mode
+				rtnVal = 28;
+			} else if (byte1 == (byte) 0x0C) {
+				//Branch if Not Equal To
+				//Immediate Addressing Mode
+				rtnVal = 29;
+			} else if (byte1 == (byte) 0x0D) {
+				//Branch if Not Equal To
+				//Direct Addressing Mode
+				rtnVal = 30;
+			} else if (byte1 == (byte) 0x0E) {
+				//Branch if Greater Than or Equal To
+				//Immediate Addressing Mode
+				rtnVal = 31;
+			} else if (byte1 == (byte) 0x0F) {
+				//Branch if Greater Than or Equal To
+				//Direct Addressing Mode
+				rtnVal = 32;
+			} else if (byte1 == (byte) 0x10) {
+				//Branch if Greater Than
+				//Immediate Addressing Mode
+				rtnVal = 33;
+			} else if (byte1 == (byte) 0x11) {
+				//Branch if Greater Than
+				//Direct Addressing Mode
+				rtnVal = 34;
+			} else if (byte1 == (byte) 0x12) {
+				//Branch if V Flag == true
+				//Immediate Addressing Mode
+				rtnVal = 35;
+			} else if (byte1 == (byte) 0x13) {
+				//Branch if V Flag == true
+				//Direct Addressing Mode
+				rtnVal = 36;
+			} else if (byte1 == (byte) 0x14) {
+				//Branch if C Flag == true
+				//Immediate Addressing Mode
+				rtnVal = 37;
+			} else if (byte1 == (byte) 0x15) {
+				//Branch if C Flag == true
+				//Direct Addressing Mode
+				rtnVal = 38;
 			}
 		}
 		
@@ -320,18 +392,241 @@ public class CPU {
 					regA.load(myALU.or(regA, fuseBytes(m.getDataAt(address), m.getDataAt((short) (address+1)))));
 				} else if (instrType == 15) { //ROR
 					regA.load(myALU.rotateRight(regA));
+					progCounter.offset((byte) 2);
 				} else if (instrType == 16) { //ROL
 					regA.load(myALU.rotateLeft(regA));
+					progCounter.offset((byte) 2);
 				} else if (instrType == 17) { //ASR
 					regA.load(myALU.arithShiftRight(regA));
+					progCounter.offset((byte) 2);
 				} else if (instrType == 18) { //ASL
 					regA.load(myALU.arithShiftLeft(regA));
+					progCounter.offset((byte) 2);
 				} else if (instrType == 19) {
 					//Bitwise invert the value stored in the accumulator
 					regA.load(myALU.invert(regA.getReg()));
+					progCounter.offset((byte) 2);
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
+					progCounter.offset((byte) 2);
+				} else if (instrType == 21) {
+					//Branch Unconditional
+					//Immediate Addressing Mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					short fuse = fuseBytes(operSpec1, operSpec2);
+					progCounter.setPC(fuse);
+				} else if (instrType == 22) {
+					//Branch Unconditional
+					//Direct Addressing Mode
+					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+					byte retrieved = m.getDataAt(fuse);
+					byte retrievedN = m.getDataAt((short) (fuse + 1));
+					short retr = fuseBytes(retrieved, retrievedN);
+					progCounter.setPC(retr);
+				} else if (instrType == 23) {
+					//Branch if RegA Less Than or Equal To Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 24) {
+					//Branch if RegA Less Than or Equal To Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 25) {
+					//Branch if RegA Less Than Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() < 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 26) {
+					//Branch if RegA Less Than Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 27) {
+					//Branch if RegA Equal To Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() == 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 28) {
+					//Branch if RegA Equal To Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 29) {
+					//Branch if RegA Not Equal To Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() != 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 30) {
+					//Branch if RegA Not Equal To Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 31) {
+					//Branch if RegA Greater Than or Equal To Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() >= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 32) {
+					//Branch if RegA Greater Than or Equal To Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 33) {
+					//Branch if RegA Greater Than Zero
+					//Immediate Addressing Mode
+					if (regA.getReg() > 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 34) {
+					//Branch if RegA Greater Than Zero
+					//Direct Addressing Mode
+					if (regA.getReg() <= 0) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 35) {
+					//Branch if V Flag == true
+					//Immediate Addressing Mode
+					if (myALU.vFlagIsSet()) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 36) {
+					//Branch if V Flag == true
+					//Direct Addressing Mode
+					if (myALU.vFlagIsSet()) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 37) {
+					//Branch if C Flag == true
+					//Immediate Addressing Mode
+					if (myALU.cFlagIsSet()) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = fuseBytes(operSpec1, operSpec2);
+						progCounter.setPC(fuse);
+					} else {
+						progCounter.offset((byte) 2);
+					}
+				} else if (instrType == 38) {
+					//Branch if C Flag == true
+					//Direct Addressing Mode
+					if (myALU.cFlagIsSet()) {
+						byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
+						byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
+						short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
+						byte retrieved = m.getDataAt(fuse);
+						byte retrievedN = m.getDataAt((short) (fuse + 1));
+						short retr = fuseBytes(retrieved, retrievedN);
+						progCounter.setPC(retr);
+					} else {
+						progCounter.offset((byte) 2);
+					}
 				}
 			} catch (Exception E) {
 				System.out.println("Error in Execution!");

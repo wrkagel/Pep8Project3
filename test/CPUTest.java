@@ -1,13 +1,9 @@
 
-import controller.Pep8Sim;
-import model.CPU;
 import model.Memory;
-import model.Register;
 import org.junit.Before;
 import org.junit.Test;
 import view.GUI;
 
-import javax.swing.*;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
