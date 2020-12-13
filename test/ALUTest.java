@@ -33,9 +33,53 @@ public class ALUTest {
 	}
 
 	@Test
+	public void testAddOverflowPositive() {
+		r.load((short) 0x7FFF);
+		short result = alu.add(r, (short) 0x7FFF);
+		assertTrue(alu.cFlagIsSet());
+		assertTrue(alu.vFlagIsSet());
+		assertFalse(alu.zFlagIsSet());
+		assertTrue(alu.nFlagIsSet());
+		assertEquals(-2, result);
+	}
+
+	@Test
+	public void testAddOverflowNegative() {
+		r.load((short) -32000);
+		short result = alu.add(r, (short) -769);
+		assertTrue(alu.cFlagIsSet());
+		assertTrue(alu.vFlagIsSet());
+		assertFalse(alu.zFlagIsSet());
+		assertFalse(alu.nFlagIsSet());
+		assertEquals(32767, result);
+	}
+
+	@Test
 	public void testSubtract() {
 		r.load((short) 15);
 		assertEquals(5, alu.subtract(r, (short) 10));
+	}
+
+	@Test
+	public void testSubtractCarryBitPositive() {
+		r.load((short) 10);
+		alu.subtract(r, (short) 5);
+		assertTrue(alu.cFlagIsSet());
+		alu.subtract(r, (short) -11);
+		assertFalse(alu.cFlagIsSet());
+		alu.subtract(r, (short) 10);
+		assertTrue(alu.cFlagIsSet());
+	}
+
+	@Test
+	public void testSubtractCarryBitNegative() {
+		r.load((short) -10);
+		alu.subtract(r, (short) 5);
+		assertTrue(alu.cFlagIsSet());
+		alu.subtract(r, (short) -11);
+		assertTrue(alu.cFlagIsSet());
+		alu.subtract(r, (short) -4);
+		assertFalse(alu.cFlagIsSet());
 	}
 
 	@Test

@@ -14,7 +14,6 @@ import java.util.Scanner;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
 /**
  * Class for GUI for pep8 virtual machine project.
@@ -36,7 +35,7 @@ public class GUI extends JFrame implements ActionListener{
 	/**Setting Object code text area.**/
 	private JTextArea ObjCode;
 	/**Setting Main frame.**/
-	private JFrame frame = new JFrame();
+	private JFrame frame;
 	/**Setting up-Panel.**/
 	private JPanel upPanel = new JPanel();
 	/**Setting Line Start Panel.**/
@@ -44,45 +43,25 @@ public class GUI extends JFrame implements ActionListener{
 	/**Setting Center main Panel.**/
 	private JPanel CenterPanel;
 	/**Setting font type for titles.**/
-	private Font myFont = new Font("Plain", Font.BOLD, 17);
+	final Font myFont = new Font("Plain", Font.BOLD, 17);
 	/**Setting font types for inside of text area.**/
-	private Font myFont2 = new Font("Plain", Font.CENTER_BASELINE,9);
+	final Font myFont2 = new Font("Plain", Font.PLAIN,9);
 	/**Setting CPU panel.**/
 	private JPanel CpuPanel;
 	/**Setting top of CPU panel.**/
 	private JPanel CpupanelTop;
-	/**Setting N check button.**/
-	private JLabel Nmark;
-	/**Setting Z check button.**/
-	private JLabel Zmark;
-	/**Setting V check button.**/
-	private JLabel Vmark;
-	/**Setting C check button.**/
-	private JLabel Cmark;
-	/**Setting Accumulator label.**/
-	private JLabel Accumulator;
 	/**Setting Accumulator text area.**/
 	private JTextField Accumulatorout1;
 	/**Setting Accumulator second text area.**/
 	private JTextField Accumulatorout2;
-	/**Setting Program Counter Label.**/
-	private JLabel ProgramCounter;
 	/**Setting program counter text area.**/
 	private JTextField ProgramCounterout1;
 	/**Setting program counter text second area.**/
 	private JTextField ProgramCounterout2;
-	/**Setting Instruction Label.**/
-	private JLabel Instruction;
 	/**Setting Instruction text area.**/
 	private JTextField Instructionout1;
-	/**Setting Instruction text second area.**/
-	private JTextField Instructionout2;
-	/**Setting Tabbed panel for batch and terminal.**/
-	private JTabbedPane tabbedPane2;
 	/**Setting Batch IO text area.**/
 	private JTextArea BatchIO;
-	/**Setting Terminal text area.**/
-	private JTextArea Terminal;
 	/**Setting Output text area.**/
 	private JTextArea Outputtext;
 	/**Setting Line-End main Panel.**/
@@ -93,78 +72,33 @@ public class GUI extends JFrame implements ActionListener{
 	private JScrollPane scroll;
 	/**Setting main Menu bar.**/
 	private JMenuBar menuBar;
-	/**Setting sub-menw for new button.**/
-	private JMenuItem newMenu;
-	/**Setting File menu.**/
-	private JMenu File;
-	/**Setting edit menu.**/
-	private JMenu Edit;
-	/**Setting cut sub-menu.**/
-	private JMenuItem cutMenu;
-	/**Setting paste sub-menu.**/
-	private JMenuItem pasteMenu;
-	/**Setting Build menu.**/
-	private JMenu Build;
-	/**Setting Load menu.**/
-	private JMenuItem loadMenu;
-	/**Setting Run menu**/
-	private JMenuItem runMenu;
-	/**Setting open sub-menu.**/
-	private JMenuItem openMenu;
-	/**Setting tab panel.**/
-	private JTabbedPane tabbedPane;
 	/**Setting source code tab with text area.**/
 	private JTextArea sourceTab;
-	/**Setting trace tab with text area.**/
-	private JTextArea traceTab;
 	/**Setting Text area for Aslisting.**/
 	private JTextArea AsListing;
 	/**Setting down of cpu panel.**/
 	private JPanel Cpupaneldown;
-	/**Setting Stack pointer labels.**/
-	private JLabel StackPointer;
-	/**Setting Stack pointer text areas1.**/
-	private JTextField StackPointer1;
-	/**Setting Stack pointer text areas1.**/
-	private JTextField StackPointer2;
-	/**Setting Index Register Label.**/
-	private JLabel IndexRegister;
-	/**Setting Index Register text areas1.**/
-	private JTextField IndexRegister1;
-	/**Setting Index Register text areas2.**/
-	private JTextField IndexRegister2;
-	/**Setting Operand label.**/	
-	private JLabel Operand;
 	/**Setting Operand text field1.**/
 	private JTextField Operand1;
 	/**Setting Operand text field2.**/
 	private JTextField Operand2;
-	/**Setting Operand specifier label.**/
-	private JLabel OperandSpecifier;
-	/**Setting Operand specifier text field1.**/
-	private JTextField OperandSpecifier1;
-	/**Setting Operand specifier text field2.**/
-	private JTextField OperandSpecifier2;
-	/**Setting words scanner to scanner result.**/
-	private Scanner wordsScanner;
 	/**Setting screensize to calculate size of application**/
-	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	/**Tells which character of BatchIO to send**/
 	private int batchIndex = -1;
-	private JPanel steppanel;
-	private JButton stepbutton;
-	private JButton resumebutton;
+	/**Setting N flag box**/
 	private JCheckBox Nbox;
+	/**Setting Z flag box**/
 	private JCheckBox Zbox;
+	/**Setting V flag box**/
 	private JCheckBox Vbox;
+	/**Setting C flag box**/
 	private JCheckBox Cbox;
 
-
 	/**
-     * Main method to run CUI methods.
-     * @author GROUP6 taehong Kim
-     * @version 10/18/2020
-     */
+	 * Main method to run GUI methods
+	 * @param args args
+	 */
 	public static void main(String []args) {
 		new GUI();
 	}
@@ -262,40 +196,57 @@ public class GUI extends JFrame implements ActionListener{
 	private void LineStartPanel () {
 		/*setting main Line Start Panel*/
 		lineStartPanel = new JPanel();
-		lineStartPanel.setLayout(new GridLayout(3,1));
+		lineStartPanel.setLayout(new GridLayout(1,1));
 		lineStartPanel.setBorder(new TitledBorder(null, "CODE", TitledBorder.CENTER, TitledBorder.TOP, myFont, null));
 		lineStartPanel.setPreferredSize(new Dimension(screenSize.width/4,screenSize.height*9/14));	
-		/*Create first sub-panel with Tabbedpane*/
-		tabbedPane = new JTabbedPane();
-		tabbedPane.setSize(screenSize.width/4,screenSize.height*3/14);
+		/*Create first sub-panel with Tabbed pane*/
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.setSize(screenSize.width/4,screenSize.height*9/14);
 		tabbedPane.setFont(myFont);
-		
-		/*Setting source code and trace tabs with text areas and add to main Line Start Panel*/
+		/*Setting first tab panel*/
+		JPanel firstTab = new JPanel();
+		firstTab.setLayout(new GridLayout(3,1));
+		/*Setting trace tab with text area*/
+		JTextArea traceTab = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
+		traceTab.setEditable(false);
+		traceTab.setLineWrap(true);
+		/*Adding tabs to the tabbed pane*/
+		tabbedPane.addTab("Code", firstTab); tabbedPane.addTab("Trace", traceTab);
+		/*Add tabbedpane to lineStartPanel*/
+		lineStartPanel.add(tabbedPane);
+		/*Setting source code text areas and add to first tab panel*/
 		sourceTab = new JTextArea("Please type your Souce Code here",screenSize.width/4,screenSize.height*3/14);
 		sourceTab.setFont(myFont);
-		traceTab = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
-		traceTab.setEditable(false);
-		tabbedPane.addTab("Code", sourceTab); tabbedPane.addTab("Trace", traceTab);
-		lineStartPanel.add(tabbedPane);
-		scroll = new JScrollPane(tabbedPane);
+		sourceTab.setLineWrap(false);
+		firstTab.add(sourceTab);
+		scroll = new JScrollPane(sourceTab);
 		scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 		scroll.getHorizontalScrollBar().setUnitIncrement(16);
 		scroll.getVerticalScrollBar().setUnitIncrement(16);
-		lineStartPanel.add(scroll);
-
-		/*Setting object code text areas and add to main Line Start Panel*/
+		firstTab.add(scroll);
+		/*Setting object code text areas and add to first tab panel*/
 		ObjCode = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
 		ObjCode.setFont(myFont);
 		ObjCode.setBorder(new TitledBorder(null, "Object Code", TitledBorder.CENTER, TitledBorder.TOP, myFont, null));
 		ObjCode.setLineWrap(true);
-		lineStartPanel.add(ObjCode);
-		
-		/*Setting Aslisting text areas and add to main Line Start Panel*/		
+		firstTab.add(ObjCode);
+		scroll = new JScrollPane(ObjCode);
+		scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+		scroll.getHorizontalScrollBar().setUnitIncrement(16);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		firstTab.add(scroll);
+		/*Setting Aslisting text areas and add to first tab panel*/
 		AsListing = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
 		AsListing.setFont(myFont);
 		AsListing.setEditable(false);
-		AsListing.setBorder(new TitledBorder(null, "Assembler Listing", TitledBorder.CENTER, TitledBorder.TOP, myFont, null));
-		lineStartPanel.add(AsListing);
+		AsListing.setLineWrap(true);
+		AsListing.setBorder(new TitledBorder(null, "Error Listing", TitledBorder.CENTER, TitledBorder.TOP, myFont, null));
+		firstTab.add(AsListing);
+		scroll = new JScrollPane(AsListing);
+		scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+		scroll.getHorizontalScrollBar().setUnitIncrement(16);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+		firstTab.add(scroll);
 	}
 	
 	/**
@@ -315,8 +266,7 @@ public class GUI extends JFrame implements ActionListener{
 		/*setting  top Panel*/
 		CpupanelTop = new JPanel();
 		CpupanelTop.setLayout(new GridLayout(1,8));
-		CpupanelTop.setSize(screenSize.width/4,screenSize.height*1/112);
-		//setPreferredSize(new Dimension(screenSize.width/4,screenSize.height*1/112));
+		CpupanelTop.setSize(screenSize.width/4,screenSize.height/112);
 		/*Calling components for buttons, labels, and text areas.*/
 		CpuChecker();
 		downCpuPanel();
@@ -336,39 +286,39 @@ public class GUI extends JFrame implements ActionListener{
 	 */
 	private void CpuChecker() {
 		/*adding check box with labels N.*/
-		Nmark = new JLabel("N");
+		JLabel Nmark = new JLabel("N");
 		Nmark.setFont(myFont);	
-		Nmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Nmark.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Nmark);
 		Nbox = new JCheckBox();
-		Nbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Nbox.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Nbox);
 			
 		/*adding check box with labels Z.*/
-		Zmark = new JLabel("Z");
+		JLabel Zmark = new JLabel("Z");
 		Zmark.setFont(myFont);	
-		Zmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Zmark.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Zmark);	
 		Zbox = new JCheckBox();
-		Zbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Zbox.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Zbox);
 			
 		/*adding check box with labels V.*/
-		Vmark = new JLabel("V");
+		JLabel Vmark = new JLabel("V");
 		Vmark.setFont(myFont);	
-		Vmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Vmark.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Vmark);	
 		Vbox = new JCheckBox();
-		Vbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Vbox.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Vbox);
 			
 		/*adding check box with labels C.*/
-		Cmark = new JLabel("C");
+		JLabel Cmark = new JLabel("C");
 		Cmark.setFont(myFont);	
-		Cmark.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Cmark.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Cmark);	
 		Cbox = new JCheckBox();
-		Cbox.setSize(new Dimension(screenSize.width*1/112,screenSize.height*1/112));
+		Cbox.setSize(new Dimension(screenSize.width/112,screenSize.height/112));
 		CpupanelTop.add(Cbox);
 		CpuPanel.add(CpupanelTop,  BorderLayout.NORTH);
 	}
@@ -388,7 +338,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for Accumulator labels, text areas.
 	 */
 	private void AccumulatorPanel() {
-		Accumulator = new JLabel("Accumulator");
+		JLabel Accumulator = new JLabel("Accumulator");
 		Accumulator.setFont(myFont2);
 		Accumulator.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(Accumulator);
@@ -408,7 +358,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for ProgramCounter labels, text areas.
 	 */
 	private void ProgramCounterPanel() {
-		ProgramCounter = new JLabel("ProgramCounter");
+		JLabel ProgramCounter = new JLabel("ProgramCounter");
 		ProgramCounter.setFont(myFont2);
 		ProgramCounter.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(ProgramCounter);
@@ -428,16 +378,16 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for StackPointer labels, text areas.
 	 */
 	private void StackPointer() {
-		StackPointer = new JLabel("StackPointer");
+		JLabel StackPointer = new JLabel("StackPointer");
 		StackPointer.setFont(myFont2);
 		StackPointer.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(StackPointer);
-		StackPointer1 = new JTextField();
+		JTextField StackPointer1 = new JTextField();
 		StackPointer1.setEditable(false);
 		StackPointer1.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		StackPointer1.setFont(myFont2);
 		Cpupaneldown.add(StackPointer1);
-		StackPointer2 = new JTextField();
+		JTextField StackPointer2 = new JTextField();
 		StackPointer2.setEditable(false);
 		StackPointer2.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		StackPointer2.setFont(myFont2);
@@ -448,16 +398,16 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for Index register labels, text areas.
 	 */
 	private void IndexRegister() {
-		IndexRegister = new JLabel("IndexRegister");
+		JLabel IndexRegister = new JLabel("IndexRegister");
 		IndexRegister.setFont(myFont2);
 		IndexRegister.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(IndexRegister);
-		IndexRegister1 = new JTextField();
+		JTextField IndexRegister1 = new JTextField();
 		IndexRegister1.setEditable(false);
 		IndexRegister1.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		IndexRegister1.setFont(myFont2);
 		Cpupaneldown.add(IndexRegister1);
-		IndexRegister2 = new JTextField();
+		JTextField IndexRegister2 = new JTextField();
 		IndexRegister2.setEditable(false);
 		IndexRegister2.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		IndexRegister2.setFont(myFont2);
@@ -468,7 +418,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for Operand labels, text areas.
 	 */
 	private void Operand() {
-		Operand = new JLabel("(Operand)");
+		JLabel Operand = new JLabel("(Operand)");
 		Operand.setFont(myFont2);
 		Operand.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(Operand);
@@ -488,16 +438,16 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for Operand specifier labels, text areas.
 	 */
 	private void OperandSpecifier() {
-		OperandSpecifier = new JLabel("Operand Specifier");
+		JLabel OperandSpecifier = new JLabel("Operand Specifier");
 		OperandSpecifier.setFont(myFont2);
 		OperandSpecifier.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(OperandSpecifier);
-		OperandSpecifier1 = new JTextField();
+		JTextField OperandSpecifier1 = new JTextField();
 		OperandSpecifier1.setEditable(false);
 		OperandSpecifier1.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		OperandSpecifier1.setFont(myFont2);
 		Cpupaneldown.add(OperandSpecifier1);
-		OperandSpecifier2 = new JTextField();
+		JTextField OperandSpecifier2 = new JTextField();
 		OperandSpecifier2.setEditable(false);
 		OperandSpecifier2.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		OperandSpecifier2.setFont(myFont2);
@@ -508,7 +458,7 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for InstructionPanel labels, text areas.
 	 */
 	private void InstructionPanel() {
-		Instruction = new JLabel("Instruction Specifier");
+		JLabel Instruction = new JLabel("Instruction Specifier");
 		Instruction.setFont(myFont2);
 		Instruction.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(Instruction);
@@ -517,7 +467,7 @@ public class GUI extends JFrame implements ActionListener{
 		Instructionout1.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Instructionout1.setFont(myFont2);
 		Cpupaneldown.add(Instructionout1);
-		Instructionout2 = new JTextField();
+		JTextField Instructionout2 = new JTextField();
 		Instructionout2.setEditable(false);
 		Instructionout2.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(Instructionout2);
@@ -529,17 +479,17 @@ public class GUI extends JFrame implements ActionListener{
 	 * step and resume buttons in Central down panel
 	 */
 	private void step(){
-		steppanel = new JPanel();
+		JPanel steppanel = new JPanel();
 		steppanel.setFont(myFont2);
 		steppanel.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		Cpupaneldown.add(steppanel);
-		stepbutton = new JButton("Single Step");
+		JButton stepbutton = new JButton("Single Step");
 		stepbutton.addActionListener(this);
 		stepbutton.setEnabled(false);
 		stepbutton.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		stepbutton.setFont(myFont2);
 		Cpupaneldown.add(stepbutton);
-		resumebutton = new JButton("Resume");
+		JButton resumebutton = new JButton("Resume");
 		resumebutton.addActionListener(this);
 		resumebutton.setPreferredSize(new Dimension(screenSize.width/12,screenSize.height*3/112));
 		resumebutton.setFont(myFont2);
@@ -551,12 +501,12 @@ public class GUI extends JFrame implements ActionListener{
 	 * Constructor for BatchIO and terminal text area with tabs.
 	 */
 	private void BatchIO() {
-		tabbedPane2 = new JTabbedPane();
+		JTabbedPane tabbedPane2 = new JTabbedPane();
 		tabbedPane2.setPreferredSize(new Dimension(screenSize.width/4,screenSize.height*3/14));
 		tabbedPane2.setFont(myFont);
 		BatchIO = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
 		BatchIO.setFont(myFont);
-		Terminal = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
+		JTextArea Terminal = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
 		tabbedPane2.addTab("BatchI/O", BatchIO); tabbedPane2.addTab("Terminal I/O", Terminal);
 		CenterPanel.add(tabbedPane2);
 		Outputtext = new JTextArea(null,screenSize.width/4,screenSize.height*3/14);
@@ -590,41 +540,56 @@ public class GUI extends JFrame implements ActionListener{
 	private void MenuBar() {
 		/*Create file menu with sub-menu*/
 		menuBar = new JMenuBar();
-		File = new JMenu("File");
+		JMenu File = new JMenu("File");
 		File.setFont(myFont);
-		newMenu = new JMenuItem("New");
+		JMenuItem newMenu = new JMenuItem("New");
 		newMenu.addActionListener(this);
-		openMenu = new JMenuItem("Open");
+		JMenuItem openMenu = new JMenuItem("Open");
 		openMenu.addActionListener(this);
 		newMenu.setFont(myFont);
 		openMenu.setFont(myFont);
 		File.add(newMenu);
-		File.add(openMenu);	
-		
-		/*Create edit menu with sub-menu*/
-		Edit = new JMenu("Edit");
-		Edit.setFont(myFont);
-		cutMenu = new JMenuItem("Cut Object Code");
-		cutMenu.addActionListener(this);
-		pasteMenu = new JMenuItem("Paste into Object Code");
-		pasteMenu.addActionListener(this);
-		cutMenu.setFont(myFont);
-		pasteMenu.setFont(myFont);
-		Edit.add(cutMenu);
-		Edit.add(pasteMenu);	
+		File.add(openMenu);
 		
 		/*Create build menu with sub-menu*/
-		Build = new JMenu("Build");
+		JMenu Build = new JMenu("Build");
 		Build.setFont(myFont);
-		loadMenu = new JMenuItem("Load");
-		loadMenu.addActionListener(this);
-		runMenu = new JMenuItem("Run");
-		runMenu.addActionListener(this);
-		loadMenu.setFont(myFont);
-		runMenu.setFont(myFont);
-		Build.add(loadMenu);
-		Build.add(runMenu);
-		
+		JMenuItem RunSourceMenu = new JMenuItem("Run Source");
+		RunSourceMenu.addActionListener(this);
+		JMenuItem StartDebuggingMenu = new JMenuItem("Debug Source");
+		StartDebuggingMenu.addActionListener(this);
+		JMenuItem RunObjectMenu = new JMenuItem("Run Object");
+		RunObjectMenu.addActionListener(this);
+		JMenuItem DebugObjectMenu= new JMenuItem("Debug Object");
+		DebugObjectMenu.addActionListener(this);
+		RunSourceMenu.setFont(myFont);
+		StartDebuggingMenu.setFont(myFont);
+		RunObjectMenu.setFont(myFont);
+		DebugObjectMenu.setFont(myFont);
+		Build.add(RunSourceMenu);
+		Build.add(StartDebuggingMenu);
+		Build.add(RunObjectMenu);
+		Build.add(DebugObjectMenu);
+
+		/*Create edit menu with sub-menu*/
+		JMenu Edit = new JMenu("Edit");
+		Edit.setFont(myFont);
+		JMenuItem obtCutMenu = new JMenuItem("Cut Object Code");
+		obtCutMenu.addActionListener(this);
+		JMenuItem objpasteMenu = new JMenuItem("Paste into Object Code");
+		objpasteMenu.addActionListener(this);
+		JMenuItem srcCutMenu = new JMenuItem("Cut Assembly Code");
+		srcCutMenu.addActionListener(this);
+		JMenuItem srcpasteMenu = new JMenuItem("Paste into Assembly Code");
+		srcpasteMenu.addActionListener(this);
+		srcCutMenu.setFont(myFont);
+		srcpasteMenu.setFont(myFont);
+		obtCutMenu.setFont(myFont);
+		objpasteMenu.setFont(myFont);
+		Edit.add(obtCutMenu);
+		Edit.add(objpasteMenu);
+		Edit.add(srcCutMenu);
+		Edit.add(srcpasteMenu);
 		/*Adding all menu buttons to menubar*/
 		menuBar.add(File);menuBar.add(Build);menuBar.add(Edit);
 		frame.setJMenuBar(menuBar);
@@ -725,6 +690,7 @@ public class GUI extends JFrame implements ActionListener{
 		} else if(userinput.equals("New")) {
 			sourceTab.setText("");
 			ObjCode.setText("");
+			AsListing.setText("");
 			Accumulatorout1.setText("");
 			Accumulatorout2.setText("");
 			Instructionout1.setText("");
@@ -737,11 +703,15 @@ public class GUI extends JFrame implements ActionListener{
 			Outputtext.setText("");
 			batchIndex = -1;
 			firePropertyChange("New", null, null);
-        } else if(userinput.equals("Cut Object Code")) {
-        	ObjCode.cut();
-        } else if(userinput.equals("Paste into Object Code")) {
-        	ObjCode.paste();;
-        }
+		} else if (userinput.equals("Cut Object Code")) {
+			ObjCode.cut();
+		} else if (userinput.equals("Paste into Object Code")) {
+			ObjCode.paste();
+		} else if (userinput.equals("Cut Assembly Code")) {
+			sourceTab.cut();
+		} else if (userinput.equals("Paste into Assembly Code")) {
+			sourceTab.paste();
+		}
 	}
 
 	/**
