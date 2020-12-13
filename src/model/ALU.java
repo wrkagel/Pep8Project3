@@ -266,7 +266,6 @@ public class ALU {
 
 	public void compare(Register r, short x2) {
 		resetFlags();
-		short x1 = r.getReg();
 		// by subtracting without returning, comparison is complete
 		subtract(r, x2);
 	}
