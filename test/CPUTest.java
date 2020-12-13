@@ -1,5 +1,6 @@
 
 import model.Memory;
+import model.CPU;
 import org.junit.Before;
 import org.junit.Test;
 import view.GUI;
