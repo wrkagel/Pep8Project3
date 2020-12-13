@@ -7,9 +7,7 @@ import view.GUI;
 
 import javax.swing.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * JUnit4 tests for the ALU class. All tests should pass.

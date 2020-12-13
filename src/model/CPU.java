@@ -367,10 +367,7 @@ public class CPU {
 					short fuse = this.calculateDirectAddress(operSpec1, operSpec2);
 					char out = (char) m.getDataAt(fuse);
 					pep8View.output(out);
-				} else if (instrType == 19) {
-					//Bitwise invert the value stored in the accumulator
-					regA.load(myALU.invert(regA.getReg()));
-				}  else if (instrType == 11) {
+				} else if (instrType == 11) {
 					//Bitwise AND (immediate)
 					byte operSpec1 = (byte) (((instrReg.getReg() & 0xFF00)) >> 8);
 					byte operSpec2 = (byte) (instrReg.getReg() & 0xFF);
@@ -416,7 +413,7 @@ public class CPU {
 				} else if (instrType == 20) {
 					//Negate the value stored in the accumulator
 					regA.load(myALU.negate(regA.getReg()));
-					progCounter.offset((byte) 2);
+//					progCounter.offset((byte) 2);
 				} else if (instrType == 21) {
 					//Branch Unconditional
 					//Immediate Addressing Mode
