@@ -268,6 +268,9 @@ public class ALU {
 		resetFlags();
 		// by subtracting without returning, comparison is complete
 		subtract(r, x2);
+		if (vFlag.isSet()) {
+			nFlag.setFlag(true);
+		}
 	}
 
 	public boolean nFlagIsSet() {
